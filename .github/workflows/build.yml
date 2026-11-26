@@ -1,33 +1,40 @@
-name: Build PS5 Launcher APK
+name: Build PS5 Launcher V2 APK
 
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-java@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
 
-      - name: Extract project
-        run: |
-          unzip PS5LauncherMobile-Project.zip -d project
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
 
-      - name: Build APK
+      - name: Extract V2 Project
+        run: |
+          unzip PS5LauncherMobile-V2-Project.zip -d project
+
+      - name: Build Android APK
         run: |
           cd project
           gradle assembleDebug
 
-      - name: Upload APK
+      - name: Upload PS5 Launcher V2 APK
         uses: actions/upload-artifact@v4
         with:
-          name: PS5-Launcher-Mobile
+          name: PS5-Launcher-Mobile-V2
           path: project/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
